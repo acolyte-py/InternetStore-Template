@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
 
 User = get_user_model()
 
 
 class Category(models.Model):
-
     name = models.CharField(max_length=255, verbose_name='Имя категории')
     slug = models.SlugField(unique=True)
 
@@ -15,6 +16,8 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    class Meta:
+        abstract = True
 
     category = models.ForeignKey(
         Category,
@@ -36,8 +39,10 @@ class Product(models.Model):
         return self.title
 
 
-class CartProduct(models.Model):
+#  class NotebookProduct(Product):
+#  class SmartphoneProduct(Product):
 
+class CartProduct(models.Model):
     user = models.ForeignKey(
         'Customer',
         verbose_name='Покупатель',
@@ -49,11 +54,12 @@ class CartProduct(models.Model):
         on_delete=models.CASCADE,
         related_name='related_products',
     )
-    product = models.ForeignKey(
-        Product,
-        verbose_name='Товар',
+    content_type = models.ForeignKey(
+        ContentType,
         on_delete=models.CASCADE,
     )
+    objects_id = models.PositiveIntegerField()
+    content_objects = GenericForeignKey('content_type', 'objects_id')
     qty = models.PositiveIntegerField(default=1)
     final_price = models.DecimalField(
         max_digits=9,
@@ -66,7 +72,6 @@ class CartProduct(models.Model):
 
 
 class Cart(models.Model):
-
     owner = models.ForeignKey(
         'Customer',
         verbose_name='Владелец',
@@ -89,7 +94,6 @@ class Cart(models.Model):
 
 
 class Customer(models.Model):
-
     user = models.ForeignKey(
         User,
         verbose_name='Покупатель',
@@ -103,16 +107,3 @@ class Customer(models.Model):
             self.user.first_name,
             self.user.last_name
         )
-
-
-class Specifications(models.Model):
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    objects_id = models.PositiveIntegerField()
-    name = models.CharField(
-        max_length=255,
-        verbose_name='имя товара для характеристик',
-    )
-
-    def __str__(self):
-        return 'Характеристики для товара: {}'.format(self.name)
