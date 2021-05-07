@@ -7,6 +7,37 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 User = get_user_model()
 
 
+class LatestProductsManager:
+
+    @staticmethod
+    def get_products_for_main_page(*args, **kwargs):
+
+        products = []
+        with_respect_to = kwargs.get('with_respect_to')
+        ct_models = ContentType.objects.filter(model__in=args)
+        for ct_model in ct_models:
+            model_products = (
+                ct_model.model_class()._base_manager.all().order_by('-id')[:5]
+            )
+            products.extend(model_products)
+        if with_respect_to:
+            ct_model = ContentType.objects.filter(model=with_respect_to)
+            if ct_model.exists():
+                if with_respect_to in args:
+                    return sorted(
+                        products,
+                        key=lambda x: x.__class__._meta.model_name.startswith(
+                            with_respect_to
+                        ), reverse=True
+                    )
+        return products
+
+
+class LatestProducts:
+
+    object = LatestProductsManager()
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name='Имя категории')
     slug = models.SlugField(unique=True)
@@ -61,7 +92,7 @@ class Notebook(Product):
 class Smartphone(Product):
 
     diagonal = models.CharField(max_length=255, verbose_name='Диагональ')
-    display = models.CharField(max_length=255, verbose_name='Диагональ')
+    display = models.CharField(max_length=255, verbose_name='Тип дисплея')
     resolution = models.CharField(
         max_length=255,
         verbose_name='Разрешение экрана'
