@@ -1,18 +1,21 @@
 from django.shortcuts import render
-from django.views.generic import DetailView
+from django.views.generic import DetailView, View
 
 from .models import Notebook, Smartphone, Category
+from .mixins import CategoryDetailMixins
 
 
-def test_view(request):
-    categories = Category.object.get_categories_for_left_sidebar()
-    context = {
-        'categories': categories
-    }
-    return render(request, 'base.html', context)
+class BaseView(View):
+
+    def get(self, request, *args, **kwargs):
+        categories = Category.object.get_categories_for_left_sidebar()
+        context = {
+            'categories': categories
+        }
+        return render(request, 'base.html', context)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(CategoryDetailMixins, DetailView):
     CT_MODEL_MODEL_CLASS = {
         'notebook': Notebook,
         'smartphone': Smartphone,
@@ -29,7 +32,7 @@ class ProductDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
 
-class CategoryDetailView(DetailView):
+class CategoryDetailView(CategoryDetailMixins, DetailView):
     model = Category
     queryset = Category.object.all()
     context_object_name = 'category'
