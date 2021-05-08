@@ -152,15 +152,16 @@ class CartProduct(models.Model):
     )
     objects_id = models.PositiveIntegerField()
     content_objects = GenericForeignKey('content_type', 'objects_id')
-    qty = models.PositiveIntegerField(default=1)
+    qty = models.PositiveIntegerField(default=0)
     final_price = models.DecimalField(
         max_digits=9,
         decimal_places=2,
+        default=0,
         verbose_name='Общая цена',
     )
 
     def __str__(self):
-        return 'Продукт: {} (for cart)'.format(self.product.title)
+        return 'Продукт: {} (for cart)'.format(self.content_objects.title)
 
 
 class Cart(models.Model):
@@ -178,8 +179,11 @@ class Cart(models.Model):
     final_price = models.DecimalField(
         max_digits=9,
         decimal_places=2,
+        default=0,
         verbose_name='Общая цена'
     )
+    in_order = models.BooleanField(default=False)
+    for_anonymous_user = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
