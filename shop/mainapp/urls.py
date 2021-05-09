@@ -6,7 +6,8 @@ from .views import (
     CategoryDetailView,
     CartView,
     AddToCartView,
-    DeleteFromCartView
+    DeleteFromCartView,
+    ChangeQTYView,
 )
 
 urlpatterns = [
@@ -31,5 +32,10 @@ urlpatterns = [
         'delete-from-cart/<str:ct_model>/<str:slug>/',
         DeleteFromCartView.as_view(),
         name='delete_from_cart'
+    ),
+    path(
+        'change-qty/<str:ct_model>/<str:slug>/',
+        ChangeQTYView.as_view(),
+        name='change_qty'
     ),
 ]
