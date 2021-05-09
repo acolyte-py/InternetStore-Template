@@ -193,7 +193,7 @@ class CartProduct(models.Model):
     )
     objects_id = models.PositiveIntegerField()
     content_objects = GenericForeignKey('content_type', 'objects_id')
-    qty = models.PositiveIntegerField(default=0)
+    qty = models.PositiveIntegerField(default=1)
     final_price = models.DecimalField(
         max_digits=9,
         decimal_places=2,
