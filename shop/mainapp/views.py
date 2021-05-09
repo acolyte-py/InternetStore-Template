@@ -67,10 +67,10 @@ class AddToCartView(View):
             user=cart.owner,
             cart=cart,
             content_type=content_type,
-            objects_id=product.id,
-            final_price=product.price,
+            objects_id=product.id
         )
-        cart.products.add(cart_product)
+        if created:
+            cart.products.add(cart_product)
         return HttpResponseRedirect('/cart/')
 
 
