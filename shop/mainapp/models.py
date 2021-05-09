@@ -118,6 +118,9 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
+    def get_model_name(self):
+        return self.__class__.__name__.lower()
+
 
 class Notebook(Product):
     diagonal = models.CharField(max_length=255, verbose_name='Диагональ')
