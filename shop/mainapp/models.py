@@ -212,6 +212,7 @@ class CartProduct(models.Model):
 class Cart(models.Model):
     owner = models.ForeignKey(
         'Customer',
+        null=True,
         verbose_name='Владелец',
         on_delete=models.CASCADE,
     )
@@ -240,8 +241,18 @@ class Customer(models.Model):
         verbose_name='Покупатель',
         on_delete=models.CASCADE,
     )
-    phone = models.CharField(max_length=11, verbose_name='Телефон')
-    address = models.CharField(max_length=255, verbose_name='Адрес')
+    phone = models.CharField(
+        max_length=11,
+        verbose_name='Телефон',
+        null=True,
+        blank=True,
+    )
+    address = models.CharField(
+        max_length=255,
+        verbose_name='Адрес',
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return 'Покупатель: {} {}'.format(
