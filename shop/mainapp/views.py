@@ -6,6 +6,7 @@ from django.contrib import messages
 
 from .models import Notebook, Smartphone, Category, LatestProducts, CartProduct
 from .mixins import CategoryDetailMixin, CartMixin
+from .form import OrderForm
 
 
 class BaseView(CartMixin, View):
@@ -125,3 +126,17 @@ class CartView(CartMixin, View):
             'categories': categories,
         }
         return render(request, 'cart.html', context)
+
+
+class CheckoutView(CartMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        categories = Category.object.get_categories_for_left_sidebar()
+        form = OrderForm(request.POST or None)
+        context = {
+            'cart': self.cart,
+            'categories': categories,
+            'form': form,
+        }
+        return render(request, 'checkout.html', context)
+
