@@ -34,7 +34,12 @@
 </table>
 <br>
 <h3 class="text-center mt-5 mb-5">Форма заказа</h3>
-{{ form|crispy }}
+<form action="{% url 'make_order' %}" method="POST">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <input type="submit" class="btn btn-success btn-block mb-3" value="Оформить заказ">
+</form>
+
 
 
 {% endblock content %}

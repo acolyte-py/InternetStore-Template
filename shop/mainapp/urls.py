@@ -9,6 +9,7 @@ from .views import (
     DeleteFromCartView,
     ChangeQTYView,
     CheckoutView,
+    MakeOrderView,
 )
 
 urlpatterns = [
@@ -40,4 +41,5 @@ urlpatterns = [
         name='change_qty'
     ),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
+    path('make-order/', MakeOrderView.as_view(), name='make_order'),
 ]
